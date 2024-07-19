@@ -29,6 +29,9 @@ public class RegistroCliente extends JDialog {
     private JTextField txtNombre;
     private JTextField txtDir;
     private JTextField txtApellido;
+    private JTextField textField;
+    private JTextField textField_1;
+    private JTextField textField_2;
 
     /**
      * Launch the application.
@@ -48,7 +51,7 @@ public class RegistroCliente extends JDialog {
      */
     public RegistroCliente() {
         setResizable(false);
-        setBounds(100, 100, 605, 314);
+        setBounds(100, 100, 766, 473);
         getContentPane().setLayout(new BorderLayout());
         contentPanel.setBackground(new Color(230, 230, 250));
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -64,7 +67,7 @@ public class RegistroCliente extends JDialog {
 
         JPanel panel = new JPanel();
         panel.setBorder(new LineBorder(new Color(205, 133, 63), 2, true));
-        panel.setBounds(10, 35, 564, 182);
+        panel.setBounds(10, 35, 727, 361);
         contentPanel.add(panel);
         panel.setLayout(null);
 
@@ -80,12 +83,12 @@ public class RegistroCliente extends JDialog {
         panel.add(txtApellido);
 
         txtDir = new JTextField();
-        txtDir.setBounds(86, 123, 439, 20);
+        txtDir.setBounds(118, 123, 439, 20);
         panel.add(txtDir);
         txtDir.setFont(new Font("Dialog", Font.PLAIN, 10));
         txtDir.setColumns(10);
 
-        JLabel lblNewLabel_3 = new JLabel("Direccion:");
+        JLabel lblNewLabel_3 = new JLabel("ID de Carrera:");
         lblNewLabel_3.setBounds(10, 125, 139, 14);
         panel.add(lblNewLabel_3);
         lblNewLabel_3.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
@@ -107,10 +110,43 @@ public class RegistroCliente extends JDialog {
         txtCedula.setFont(new Font("Dialog", Font.PLAIN, 10));
         txtCedula.setColumns(10);
 
-        JLabel lblNewLabel_2 = new JLabel("Cedula");
+        JLabel lblNewLabel_2 = new JLabel("ID");
         lblNewLabel_2.setBounds(10, 31, 46, 14);
         panel.add(lblNewLabel_2);
         lblNewLabel_2.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+        
+        JLabel lblIdCategoriaDe = new JLabel("ID Categoria de Pago:");
+        lblIdCategoriaDe.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+        lblIdCategoriaDe.setBounds(10, 181, 166, 14);
+        panel.add(lblIdCategoriaDe);
+        
+        textField = new JTextField();
+        textField.setFont(new Font("Dialog", Font.PLAIN, 10));
+        textField.setColumns(10);
+        textField.setBounds(186, 179, 64, 20);
+        panel.add(textField);
+        
+        JLabel lblIdNacionalidad = new JLabel("ID Nacionalidad:");
+        lblIdNacionalidad.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+        lblIdNacionalidad.setBounds(10, 235, 166, 14);
+        panel.add(lblIdNacionalidad);
+        
+        textField_1 = new JTextField();
+        textField_1.setFont(new Font("Dialog", Font.PLAIN, 10));
+        textField_1.setColumns(10);
+        textField_1.setBounds(149, 233, 64, 20);
+        panel.add(textField_1);
+        
+        JLabel lblDireccion = new JLabel("Direccion:");
+        lblDireccion.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+        lblDireccion.setBounds(10, 299, 166, 14);
+        panel.add(lblDireccion);
+        
+        textField_2 = new JTextField();
+        textField_2.setFont(new Font("Dialog", Font.PLAIN, 10));
+        textField_2.setColumns(10);
+        textField_2.setBounds(107, 297, 439, 20);
+        panel.add(textField_2);
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBorder(new LineBorder(new Color(184, 134, 11), 2, true));
