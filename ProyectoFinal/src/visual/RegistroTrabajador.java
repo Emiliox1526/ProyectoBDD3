@@ -105,7 +105,7 @@ public class RegistroTrabajador extends JDialog {
 			getContentPane().add(panel, BorderLayout.CENTER);
 			panel.setLayout(null);
 			setLocationRelativeTo(null);
-			JLabel lblNewLabel = new JLabel("Nuevo trabajador\r\n");
+			JLabel lblNewLabel = new JLabel("Nuevo Grupo\r\n");
 			lblNewLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 15));
 			lblNewLabel.setBounds(10, 26, 135, 25);
 			panel.add(lblNewLabel);
@@ -204,19 +204,19 @@ public class RegistroTrabajador extends JDialog {
 			});
 			panel_3.setVisible(false);
 			
-			JLabel lblNewLabel_1 = new JLabel("Cedula:\r\n");
+			JLabel lblNewLabel_1 = new JLabel("IdPeriodo:\r\n");
 			lblNewLabel_1.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
 			lblNewLabel_1.setBounds(20, 62, 88, 14);
 			panel.add(lblNewLabel_1);
 			
-			JLabel lblApellidos = new JLabel("Apellido (s):");
+			JLabel lblApellidos = new JLabel("Cupo de Grupo:");
 			lblApellidos.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
-			lblApellidos.setBounds(279, 97, 88, 14);
+			lblApellidos.setBounds(279, 97, 108, 14);
 			panel.add(lblApellidos);
 			
-			JLabel lblNombres = new JLabel("Nombre(s):");
+			JLabel lblNombres = new JLabel("CodigoAsignatura:");
 			lblNombres.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
-			lblNombres.setBounds(20, 97, 88, 14);
+			lblNombres.setBounds(20, 97, 125, 14);
 			panel.add(lblNombres);
 			
 			JLabel lblSexo = new JLabel("Sexo:");
@@ -229,7 +229,7 @@ public class RegistroTrabajador extends JDialog {
 			lblEdad.setBounds(20, 183, 48, 22);
 			panel.add(lblEdad);
 			
-			JLabel lblDireccion = new JLabel("Direccion:");
+			JLabel lblDireccion = new JLabel("Horario:");
 			lblDireccion.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
 			lblDireccion.setBounds(20, 158, 88, 14);
 			panel.add(lblDireccion);
@@ -255,12 +255,12 @@ public class RegistroTrabajador extends JDialog {
 			
 			Nombre = new JTextField();
 			Nombre.setColumns(10);
-			Nombre.setBounds(99, 94, 170, 20);
+			Nombre.setBounds(149, 94, 120, 20);
 			panel.add(Nombre);
 			
 			textField = new JTextField();
 			textField.setColumns(10);
-			textField.setBounds(362, 95, 152, 20);
+			textField.setBounds(397, 95, 135, 20);
 			panel.add(textField);
 			
 			JComboBox comboBox = new JComboBox();
