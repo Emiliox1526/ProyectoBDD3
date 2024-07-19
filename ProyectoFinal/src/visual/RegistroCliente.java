@@ -57,7 +57,7 @@ public class RegistroCliente extends JDialog {
         setLocationRelativeTo(null);
 
 
-        JLabel lblNewLabel = new JLabel("Registro cliente");
+        JLabel lblNewLabel = new JLabel("Registro Estudiante");
         lblNewLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 15));
         lblNewLabel.setBounds(10, 21, 137, 14);
         contentPanel.add(lblNewLabel);
