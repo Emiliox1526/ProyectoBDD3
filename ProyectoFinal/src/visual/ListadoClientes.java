@@ -24,7 +24,6 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 import Conexion.SQL;
-import logico.Cliente;
 import javax.swing.JSpinner;
 
 public class ListadoClientes extends JDialog {
@@ -94,7 +93,7 @@ public class ListadoClientes extends JDialog {
         panel_1.add(btnBuscar);
         btnBuscar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                loadClientes();
+            	loadEstudiantes();
             }
         });
         btnBuscar.setBackground(new Color(51, 204, 153));
@@ -148,7 +147,7 @@ public class ListadoClientes extends JDialog {
                 nombre.setText("");
                 Apellido.setText("");
                 spnCant.setValue(0);
-                loadClientes();
+                loadEstudiantes();
             }
         });
         btnReiniciar.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
@@ -180,10 +179,10 @@ public class ListadoClientes extends JDialog {
         contentPanel.add(lblNewLabel);
         lblNewLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 15));
         
-        loadClientes();
+        loadEstudiantes();
     }
     
-    private void loadClientes() {
+    private void loadEstudiantes() {
         model.setRowCount(0);
         row = new Object[model.getColumnCount()];
 

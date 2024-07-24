@@ -7,6 +7,9 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -25,6 +28,7 @@ import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+import Conexion.SQL;
 import logico.Cliente;
 import logico.Diseñador;
 import logico.Empresa;
@@ -59,7 +63,7 @@ public class ListadoProyecto extends JDialog {
 			
 			ListadoProyecto dialog = new ListadoProyecto();
 			
-			dialog.loadProyectos();
+			dialog.loadHorario();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -79,7 +83,7 @@ public class ListadoProyecto extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		setLocationRelativeTo(null);
-		String[] header = {"ID", "Cliente", "Fecha de inicio", "Fecha de entrega","Prorrogado","Penalizado"};
+		String[] header = {"ID Periodo", "ID Asignatura", "Numero del Grupo", "Numero dia Semana","Fecha Hora Inicio","Fecha Hora Fin"};
 		
 		model = new DefaultTableModel();
 		model.setColumnIdentifiers(header);
@@ -191,7 +195,7 @@ public class ListadoProyecto extends JDialog {
 			    ID.setText("");
 			    Nombre.setText("");
 			    Apellido.setText("");
-				loadProyectos();
+			    loadHorario();
 			}
 		});
 		btnReiniciar.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
@@ -257,42 +261,34 @@ public class ListadoProyecto extends JDialog {
 		}
 	}
 	
-	private void loadProyectos() {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-	    model.setRowCount(0);
-	    row = new Object[model.getColumnCount()];
-	    
-	    if (empresa != null) {
-	        ArrayList<Proyecto> proyectos = empresa.getMisProyectos();
-	        if (proyectos != null && !proyectos.isEmpty()) {
-	            
-	            for (Proyecto proyecto : proyectos) {
-	                System.out.println(proyecto.getCliente().getNombre()+" "+ proyecto.getCliente().getApellido());
-	                row[0] = proyecto.getId().toString();
-	                row[1] = proyecto.getCliente().getNombre().toString()+" "+proyecto.getCliente().getApellido().toString();
-	                row[2] = dateFormat.format(proyecto.getFechaInicio());
-	                if(proyecto.getFechaProrroga() == null && proyecto.isPenalizado() == false) {
-	                	row[3] = dateFormat.format(proyecto.getFechaEntregaInicial());
-	                }else {
-	                	row[3] = dateFormat.format(proyecto.getFechaEntregaFinal());
+	   private void loadHorario() {
+	        model.setRowCount(0);
+	        row = new Object[model.getColumnCount()];
+
+	        Connection connection = SQL.getConnection();
+	        if (connection != null) {
+	            try {
+	                Statement stmt = connection.createStatement();
+	                String query = ("SELECT * FROM [Horario de un Grupo]");
+	                ResultSet rs = stmt.executeQuery(query);
+
+	                while (rs.next()) {
+	                	 row[0] = rs.getString("idPeriodo");
+	                     row[1] = rs.getString("idAsignatura");
+	                     row[2] = rs.getString("Numero Del Grupo");
+	                     row[3] = rs.getInt("Numero dia Semana");
+	                     row[4] = rs.getTimestamp("Fecha Hora Inicio");
+	                     row[5] = rs.getTimestamp("Fecha Hora Fin");
+	                    model.addRow(row);
 	                }
-	                if(proyecto.getFechaProrroga() == null) {
-	                	row[4] = "No";
-	                }else {
-	                	row[4] = proyecto.getFechaProrroga().toString();
-	                }
-	                if (proyecto.isPenalizado()) {
-	                    row[5] = "Si";
-	                } else {
-	                    row[5] = "No";
-	                }
-	                model.addRow(row);
-	                
+
+	                rs.close();
+	                stmt.close();
+	                connection.close();
+	            } catch (Exception e) {
+	                e.printStackTrace();
 	            }
-	                 
-	            table.setModel(model);
 	        }
 	    }
-		
 	}
-}
+
