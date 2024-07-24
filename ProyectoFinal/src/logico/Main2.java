@@ -13,7 +13,7 @@ public class Main2 {
                 // Crear una declaración
                 Statement stmt = connection.createStatement();
                 // Ejecutar una consulta
-                ResultSet rs = stmt.executeQuery("SELECT * FROM Estudiante");
+                ResultSet rs = stmt.executeQuery("SELECT * FROM Asignatura");
 
                 // Procesar los resultados
                 while (rs.next()) {
