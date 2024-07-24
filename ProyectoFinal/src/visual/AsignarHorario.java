@@ -223,7 +223,7 @@ public class AsignarHorario extends JDialog {
             Connection connection = SQL.getConnection();
             if (connection != null) {
                 try {
-                    String query = "INSERT INTO [HorarioGrupo] (IdPeriodo, IdAsignatura, Numero Del Grupo, Numero dia Semana, Fecha Hora Inicio, Fecha Hora Fin) VALUES (?, ?, ?, ?, ?, ?)";
+                    String query = "INSERT INTO [Horario de un Grupo] (IdPeriodo, IdAsignatura, [Numero Del Grupo], [Numero dia Semana], [Fecha Hora Inicio], [Fecha Hora Fin]) VALUES (?, ?, ?, ?, ?, ?)";
                     PreparedStatement pstmt = connection.prepareStatement(query);
                     pstmt.setString(1, idPeriodo);
                     pstmt.setString(2, idAsignatura);
@@ -260,7 +260,7 @@ public class AsignarHorario extends JDialog {
             Connection connection = SQL.getConnection();
             if (connection != null) {
                 try {
-                    String query = "INSERT INTO [Horario de un Grupo] (IdPeriodo, IdAsignatura, Numero Del Grupo, Numero dia Semana, Fecha Hora Inicio, Fecha Hora Fin) VALUES (?, ?, ?, ?, ?, ?)";
+                    String query = "INSERT INTO [Horario de un Grupo] (IdPeriodo, IdAsignatura, [Numero Del Grupo], [Numero dia Semana], [Fecha Hora Inicio], [Fecha Hora Fin]) VALUES (?, ?, ?, ?, ?, ?)";
                     PreparedStatement pstmt = connection.prepareStatement(query);
                     pstmt.setString(1, idPeriodo);
                     pstmt.setString(2, idAsignatura);
