@@ -205,78 +205,66 @@ public class AsignarHorario extends JDialog {
     }
 
     private void asignarHorario() {
-        // Buscar la fila seleccionada en tableHorario
-        int selectedRowHorario = -1;
-        for (int i = 0; i < tableHorario.getRowCount(); i++) {
-            Boolean isSelected = (Boolean) tableHorario.getValueAt(i, 0);
+        // Intentar asignar desde tableHorario
+        boolean horarioAsignado = asignarDesdeTabla(tableHorario, modelHorario, "[Horario de un Grupo]");
+
+        // Si no se asignó desde tableHorario, intentar asignar desde tableGrupo
+        if (!horarioAsignado) {
+            boolean grupoAsignado = asignarDesdeTabla(tableGrupo, modelGrupo, "[Horario de un Grupo]");
+            if (grupoAsignado) {
+                JOptionPane.showMessageDialog(this, "Grupo asignado exitosamente.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Debe seleccionar un grupo en la tabla de grupo.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Horario asignado exitosamente.");
+        }
+    }
+
+    private boolean asignarDesdeTabla(JTable table, DefaultTableModel model, String tableName) {
+        int selectedRow = -1;
+        for (int i = 0; i < table.getRowCount(); i++) {
+            Boolean isSelected = (Boolean) table.getValueAt(i, 0);
             if (isSelected != null && isSelected) {
-                selectedRowHorario = i;
+                selectedRow = i;
                 break;
             }
         }
 
-        if (selectedRowHorario != -1) {
-            String idPeriodo = (String) tableHorario.getValueAt(selectedRowHorario, 1);
-            String idAsignatura = (String) tableHorario.getValueAt(selectedRowHorario, 2);
-            String numeroGrupo = (String) tableHorario.getValueAt(selectedRowHorario, 3);
+        if (selectedRow != -1) {
+            String idPeriodo = (String) table.getValueAt(selectedRow, 1);
+            String idAsignatura = (String) table.getValueAt(selectedRow, 2);
+            String numeroGrupo = (String) table.getValueAt(selectedRow, 3);
+            // Recolecta los otros datos necesarios para el INSERT
+            Object[] rowData = new Object[] {
+                idPeriodo, idAsignatura, numeroGrupo, 
+                table.getValueAt(selectedRow, 4), 
+                table.getValueAt(selectedRow, 5),
+                table.getValueAt(selectedRow, 6)
+            };
 
             Connection connection = SQL.getConnection();
             if (connection != null) {
                 try {
-                    String query = "INSERT INTO [Horario de un Grupo] (IdPeriodo, IdAsignatura, [Numero Del Grupo], [Numero dia Semana], [Fecha Hora Inicio], [Fecha Hora Fin]) VALUES (?, ?, ?, ?, ?, ?)";
+                    String query = "INSERT INTO " + tableName + " (IdPeriodo, IdAsignatura, [Numero Del Grupo], [Numero dia Semana], [Fecha Hora Inicio], [Fecha Hora Fin]) VALUES (?, ?, ?, ?, ?, ?)";
                     PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, idPeriodo);
-                    pstmt.setString(2, idAsignatura);
-                    pstmt.setString(3, numeroGrupo);
+                    pstmt.setString(1, (String) rowData[0]);
+                    pstmt.setString(2, (String) rowData[1]);
+                    pstmt.setString(3, (String) rowData[2]);
+                    pstmt.setShort(4, (Short) rowData[3]);
+                    pstmt.setTimestamp(5, (Timestamp) rowData[4]);
+                    pstmt.setTimestamp(6, (Timestamp) rowData[5]);
 
                     pstmt.executeUpdate();
                     pstmt.close();
                     connection.close();
-                    JOptionPane.showMessageDialog(this, "Horario asignado exitosamente.");
+                    return true;
                 } catch (Exception e) {
                     e.printStackTrace();
                     JOptionPane.showMessageDialog(this, "Error al asignar el horario.");
                 }
             }
-        } else {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar un grupo en la tabla de horario.");
         }
-
-        // Buscar la fila seleccionada en tableGrupo
-        int selectedRowGrupo = -1;
-        for (int i = 0; i < tableGrupo.getRowCount(); i++) {
-            Boolean isSelected = (Boolean) tableGrupo.getValueAt(i, 0);
-            if (isSelected != null && isSelected) {
-                selectedRowGrupo = i;
-                break;
-            }
-        }
-
-        if (selectedRowGrupo != -1) {
-            String idPeriodo = (String) tableGrupo.getValueAt(selectedRowGrupo, 1);
-            String idAsignatura = (String) tableGrupo.getValueAt(selectedRowGrupo, 2);
-            String numeroGrupo = (String) tableGrupo.getValueAt(selectedRowGrupo, 3);
-
-            Connection connection = SQL.getConnection();
-            if (connection != null) {
-                try {
-                    String query = "INSERT INTO [Horario de un Grupo] (IdPeriodo, IdAsignatura, [Numero Del Grupo], [Numero dia Semana], [Fecha Hora Inicio], [Fecha Hora Fin]) VALUES (?, ?, ?, ?, ?, ?)";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, idPeriodo);
-                    pstmt.setString(2, idAsignatura);
-                    pstmt.setString(3, numeroGrupo);
-
-                    pstmt.executeUpdate();
-                    pstmt.close();
-                    connection.close();
-                    JOptionPane.showMessageDialog(this, "Grupo asignado exitosamente.");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    JOptionPane.showMessageDialog(this, "Error al asignar el grupo.");
-                }
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar un grupo en la tabla de grupo.");
-        }
+        return false;
     }
 }
