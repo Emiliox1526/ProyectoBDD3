@@ -83,7 +83,7 @@ public class ListadoProyecto extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		setLocationRelativeTo(null);
-		String[] header = {"ID Periodo", "ID Asignatura", "Numero del Grupo", "Numero dia Semana","Fecha Hora Inicio","Fecha Hora Fin"};
+		String[] header = {"ID Periodo", "ID Asignatura", "Numero del Grupo", "Numero dia Semana","Horario"};
 		
 		model = new DefaultTableModel();
 		model.setColumnIdentifiers(header);
@@ -233,16 +233,15 @@ public class ListadoProyecto extends JDialog {
 	        if (connection != null) {
 	            try {
 	                Statement stmt = connection.createStatement();
-	                String query = ("SELECT * FROM [Horario de un Grupo]");
+	                String query = ("SELECT * FROM Grupo");
 	                ResultSet rs = stmt.executeQuery(query);
 
 	                while (rs.next()) {
-	                	 row[0] = rs.getString("idPeriodo");
-	                     row[1] = rs.getString("idAsignatura");
+	                	 row[0] = rs.getString("IdPeriodo");
+	                     row[1] = rs.getString("IdAsignatura");
 	                     row[2] = rs.getString("Numero Del Grupo");
-	                     row[3] = rs.getInt("Numero dia Semana");
-	                     row[4] = rs.getTimestamp("Fecha Hora Inicio");
-	                     row[5] = rs.getTimestamp("Fecha Hora Fin");
+	                     row[3] = rs.getInt("Cupo del Grupo");
+	                     row[4] = rs.getString("Horario");
 	                    model.addRow(row);
 	                }
 
