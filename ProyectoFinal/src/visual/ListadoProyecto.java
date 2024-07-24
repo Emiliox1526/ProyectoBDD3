@@ -83,7 +83,7 @@ public class ListadoProyecto extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		setLocationRelativeTo(null);
-		String[] header = {"ID Periodo", "ID Asignatura", "Numero del Grupo", "Numero dia Semana","Horario"};
+		String[] header = {"ID Periodo", "ID Asignatura", "Numero del Grupo", "Cupo del Grupo","Horario"};
 		
 		model = new DefaultTableModel();
 		model.setColumnIdentifiers(header);
