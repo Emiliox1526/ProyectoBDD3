@@ -53,7 +53,7 @@ public class ListadoProyecto extends JDialog {
 	private JTextField Apellido;
 	private JTextField ID;
 	private JTextField Nombre;
-	Empresa empresa = Empresa.cargarEmpresa("controlador.dat");
+	
 	
 	/**
 	 * Launch the application.
@@ -76,7 +76,7 @@ public class ListadoProyecto extends JDialog {
 	 */
 	public ListadoProyecto() {
 		setResizable(false);
-		setBounds(100, 100, 675, 466);
+		setBounds(100, 100, 810, 466);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(new Color(230, 230, 250));
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -93,7 +93,7 @@ public class ListadoProyecto extends JDialog {
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(SystemColor.menu);
 		panel_1.setBorder(new LineBorder(new Color(160, 82, 45), 2, true));
-		panel_1.setBounds(10, 35, 636, 344);
+		panel_1.setBounds(10, 35, 784, 344);
 		contentPanel.add(panel_1);
 		panel_1.setLayout(null);
 		{
@@ -143,45 +143,8 @@ public class ListadoProyecto extends JDialog {
 		panel_1.add(btnBuscar);
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
-
-			    model.setRowCount(0);
-
-			    String id = ID.getText();
-			    String nombre = Nombre.getText();
-			    String apellido = Apellido.getText();
+			
 			  
-			    for (Proyecto proyecto : empresa.getMisProyectos()) {
-			        if ((id.isEmpty() || proyecto.getId().equalsIgnoreCase(id))
-			                && (nombre.isEmpty() || proyecto.getCliente().getNombre().equalsIgnoreCase(nombre))
-			                && (apellido.isEmpty() || proyecto.getCliente().getApellido().equalsIgnoreCase(apellido)))
-			                {
-			        	row[0] = proyecto.getId().toString();
-		                row[1] = proyecto.getCliente().getNombre().toString()+" "+proyecto.getCliente().getApellido().toString();
-		                row[2] = proyecto.getFechaInicio().toString();
-		                if(proyecto.getFechaProrroga() == null && proyecto.isPenalizado() == false) {
-		                	row[3] = proyecto.getFechaEntregaInicial().toString();
-		                }else {
-		                	row[3] = proyecto.getFechaEntregaFinal().toString();
-		                }
-		                if(proyecto.getFechaProrroga() == null) {
-		                	row[4] = "No";
-		                }else {
-		                	row[4] = proyecto.getFechaProrroga().toString();
-		                }
-		                if (proyecto.isPenalizado()) {
-		                    row[5] = "Si";
-		                } else {
-		                    row[5] = "No";
-		                }
-		                model.addRow(row);
-			        
-			        
-			    }
-
-			    
-			}
-
 		}});
 		btnBuscar.setBackground(new Color(51, 204, 153));
 		btnBuscar.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
@@ -204,20 +167,10 @@ public class ListadoProyecto extends JDialog {
 		panel_1.add(btnReiniciar);
 		
 		JPanel panel = new JPanel();
-		panel.setBounds(10, 145, 616, 188);
+		panel.setBounds(10, 145, 764, 188);
 		panel_1.add(panel);
 		panel.setBorder(new LineBorder(new Color(30, 144, 255), 2, true));
 		panel.setLayout(new BorderLayout(0, 0));
-		
-		JScrollPane scrollPane = new JScrollPane();
-		panel.add(scrollPane, BorderLayout.CENTER);
-		table = new JTable();
-		table.setBackground(SystemColor.textHighlightText);
-		table.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		table.setColumnSelectionAllowed(true);
-		table.setEnabled(false);
-		scrollPane.setViewportView(table);
-		table.setModel(model);
 		
 		JButton btnProrroga = new JButton("Prorrogar");
 		btnProrroga.addActionListener(new ActionListener() {
@@ -231,6 +184,17 @@ public class ListadoProyecto extends JDialog {
 		btnProrroga.setBackground(new Color(50, 205, 50));
 		btnProrroga.setBounds(533, 36, 93, 75);
 		panel_1.add(btnProrroga);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 145, 764, 184);
+		panel_1.add(scrollPane);
+		table = new JTable();
+		table.setBackground(SystemColor.textHighlightText);
+		table.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		table.setColumnSelectionAllowed(true);
+		table.setEnabled(false);
+		scrollPane.setViewportView(table);
+		table.setModel(model);
 		
 		
 		{
