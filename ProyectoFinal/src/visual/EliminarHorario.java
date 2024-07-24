@@ -5,17 +5,16 @@ import java.awt.event.*;
 import java.sql.*;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import Conexion.SQL;
 
 public class EliminarHorario extends JDialog {
 
     private final JPanel contentPanel = new JPanel();
-    private JTextField txtIdPeriodo;
-    private JTextField txtIdAsignatura;
-    private JTextField txtNumeroGrupo;
-    private JTextField txtNumeroDia;
-    private JTextField txtFechaHoraInicio;
+    private static DefaultTableModel modelHorario;
+    private JTable tableHorario;
 
     public static void main(String[] args) {
         try {
@@ -28,57 +27,51 @@ public class EliminarHorario extends JDialog {
     }
 
     public EliminarHorario() {
-        setBounds(100, 100, 450, 300);
+        String[] headerHorario = {"Seleccionar", "ID Periodo", "ID Asignatura", "Numero del Grupo", "Numero dia Semana", "Fecha Hora Inicio", "Fecha Hora Fin"};
+        modelHorario = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 0; 
+            }
+
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                if (columnIndex == 0) {
+                    return Boolean.class; 
+                }
+                return super.getColumnClass(columnIndex);
+            }
+        };
+        modelHorario.setColumnIdentifiers(headerHorario);
+
+        setBounds(100, 100, 719, 678);
         getContentPane().setLayout(new BorderLayout());
         contentPanel.setBorder(new LineBorder(new Color(160, 82, 45), 2, true));
         contentPanel.setBackground(new Color(230, 230, 250));
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
 
-        JLabel lblIdPeriodo = new JLabel("ID Periodo:");
-        lblIdPeriodo.setBounds(10, 20, 80, 14);
-        contentPanel.add(lblIdPeriodo);
+        JPanel panel = new JPanel();
+        panel.setBorder(new LineBorder(new Color(0, 0, 0)));
+        panel.setBackground(Color.WHITE);
+        panel.setBounds(10, 11, 677, 249); 
+        contentPanel.add(panel);
+        panel.setLayout(new BorderLayout());
 
-        txtIdPeriodo = new JTextField();
-        txtIdPeriodo.setBounds(100, 17, 150, 20);
-        contentPanel.add(txtIdPeriodo);
-        txtIdPeriodo.setColumns(10);
-
-        JLabel lblIdAsignatura = new JLabel("ID Asignatura:");
-        lblIdAsignatura.setBounds(10, 50, 100, 14);
-        contentPanel.add(lblIdAsignatura);
-
-        txtIdAsignatura = new JTextField();
-        txtIdAsignatura.setBounds(120, 47, 150, 20);
-        contentPanel.add(txtIdAsignatura);
-        txtIdAsignatura.setColumns(10);
-
-        JLabel lblNumeroGrupo = new JLabel("Numero Grupo:");
-        lblNumeroGrupo.setBounds(10, 80, 100, 14);
-        contentPanel.add(lblNumeroGrupo);
-
-        txtNumeroGrupo = new JTextField();
-        txtNumeroGrupo.setBounds(120, 77, 150, 20);
-        contentPanel.add(txtNumeroGrupo);
-        txtNumeroGrupo.setColumns(10);
-
-        JLabel lblNumeroDia = new JLabel("Numero Día:");
-        lblNumeroDia.setBounds(10, 110, 100, 14);
-        contentPanel.add(lblNumeroDia);
-
-        txtNumeroDia = new JTextField();
-        txtNumeroDia.setBounds(120, 107, 150, 20);
-        contentPanel.add(txtNumeroDia);
-        txtNumeroDia.setColumns(10);
-
-        JLabel lblFechaHoraInicio = new JLabel("Fecha Hora Inicio:");
-        lblFechaHoraInicio.setBounds(10, 140, 120, 14);
-        contentPanel.add(lblFechaHoraInicio);
-
-        txtFechaHoraInicio = new JTextField();
-        txtFechaHoraInicio.setBounds(140, 137, 150, 20);
-        contentPanel.add(txtFechaHoraInicio);
-        txtFechaHoraInicio.setColumns(10);
+        tableHorario = new JTable(modelHorario);
+        tableHorario.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(new JCheckBox()));
+        tableHorario.getColumnModel().getColumn(0).setCellRenderer(new TableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                JRadioButton radioButton = new JRadioButton();
+                if (value != null) {
+                    radioButton.setSelected((Boolean) value);
+                }
+                return radioButton;
+            }
+        });
+        JScrollPane scrollPane = new JScrollPane(tableHorario);
+        panel.add(scrollPane, BorderLayout.CENTER); // Agregar el JScrollPane al panel
 
         JPanel buttonPane = new JPanel();
         buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -87,7 +80,7 @@ public class EliminarHorario extends JDialog {
         JButton btnEliminar = new JButton("Eliminar");
         btnEliminar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                eliminarHorario();
+                eliminarHorarioAsignado();
             }
         });
         btnEliminar.setActionCommand("OK");
@@ -101,39 +94,85 @@ public class EliminarHorario extends JDialog {
         });
         cancelButton.setActionCommand("Cancel");
         buttonPane.add(cancelButton);
+
+        loadHorario();
     }
 
-    private void eliminarHorario() {
-        String idPeriodo = txtIdPeriodo.getText();
-        String idAsignatura = txtIdAsignatura.getText();
-        String numeroGrupo = txtNumeroGrupo.getText();
-        String numeroDia = txtNumeroDia.getText();
-        String fechaHoraInicio = txtFechaHoraInicio.getText();
-
+    private void loadHorario() {
         Connection connection = SQL.getConnection();
         if (connection != null) {
             try {
-                String query = "DELETE FROM [Horario de un Grupo] WHERE IdPeriodo = ? AND IdAsignatura = ? AND Numero Del Grupo = ? AND Numero dia Semana = ? AND Fecha Hora Inicio = ?";
-                PreparedStatement pstmt = connection.prepareStatement(query);
-                pstmt.setString(1, idPeriodo);
-                pstmt.setString(2, idAsignatura);
-                pstmt.setString(3, numeroGrupo);
-                pstmt.setShort(4, Short.parseShort(numeroDia));
-                pstmt.setTimestamp(5, Timestamp.valueOf(fechaHoraInicio));
+                Statement stmt = connection.createStatement();
+                String query = ("SELECT * FROM [Horario de un Grupo]");
+                ResultSet rs = stmt.executeQuery(query);
 
-                int rowsAffected = pstmt.executeUpdate();
-                if (rowsAffected > 0) {
-                    JOptionPane.showMessageDialog(this, "Horario eliminado exitosamente.");
-                } else {
-                    JOptionPane.showMessageDialog(this, "No se encontró el horario.");
+                while (rs.next()) {
+                    Object[] row = new Object[7];
+                    row[0] = false; // Valor inicial del radio button
+                    row[1] = rs.getString("IdPeriodo");
+                    row[2] = rs.getString("IdAsignatura");
+                    row[3] = rs.getString("Numero Del Grupo");
+                    row[4] = rs.getShort("Numero dia Semana");
+                    row[5] = rs.getTimestamp("Fecha Hora Inicio");
+                    row[6] = rs.getTimestamp("Fecha Hora Fin");
+                    modelHorario.addRow(row);
                 }
 
-                pstmt.close();
+                rs.close();
+                stmt.close();
                 connection.close();
             } catch (Exception e) {
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Error al eliminar el horario.");
             }
+        }
+    }
+
+    private void eliminarHorarioAsignado() {
+        // Buscar la fila seleccionada en tableHorario
+        int selectedRowHorario = -1;
+        for (int i = 0; i < tableHorario.getRowCount(); i++) {
+            Boolean isSelected = (Boolean) tableHorario.getValueAt(i, 0);
+            if (isSelected != null && isSelected) {
+                selectedRowHorario = i;
+                break;
+            }
+        }
+
+        if (selectedRowHorario != -1) {
+            String idPeriodo = (String) tableHorario.getValueAt(selectedRowHorario, 1);
+            String idAsignatura = (String) tableHorario.getValueAt(selectedRowHorario, 2);
+            String numeroGrupo = (String) tableHorario.getValueAt(selectedRowHorario, 3);
+            String numeroDia = tableHorario.getValueAt(selectedRowHorario, 4).toString();
+            Timestamp fechaHoraInicio = (Timestamp) tableHorario.getValueAt(selectedRowHorario, 5);
+
+            Connection connection = SQL.getConnection();
+            if (connection != null) {
+                try {
+                    String query = "DELETE FROM [Horario de un Grupo] WHERE IdPeriodo = ? AND IdAsignatura = ? AND Numero Del Grupo = ? AND Numero dia Semana = ? AND Fecha Hora Inicio = ?";
+                    PreparedStatement pstmt = connection.prepareStatement(query);
+                    pstmt.setString(1, idPeriodo);
+                    pstmt.setString(2, idAsignatura);
+                    pstmt.setString(3, numeroGrupo);
+                    pstmt.setShort(4, Short.parseShort(numeroDia));
+                    pstmt.setTimestamp(5, fechaHoraInicio);
+
+                    int rowsAffected = pstmt.executeUpdate();
+                    if (rowsAffected > 0) {
+                        JOptionPane.showMessageDialog(this, "Horario eliminado exitosamente.");
+                        modelHorario.removeRow(selectedRowHorario);
+                    } else {
+                        JOptionPane.showMessageDialog(this, "No se encontró el horario.");
+                    }
+
+                    pstmt.close();
+                    connection.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "Error al eliminar el horario.");
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un horario en la tabla de horarios.");
         }
     }
 }

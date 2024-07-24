@@ -180,7 +180,7 @@ public class AsignarHorario extends JDialog {
         if (connection != null) {
             try {
                 Statement stmt = connection.createStatement();
-                String query = ("SELECT * FROM HorarioGrupo");
+                String query = ("SELECT * FROM [Horario de un Grupo]");
                 ResultSet rs = stmt.executeQuery(query);
 
                 while (rs.next()) {
