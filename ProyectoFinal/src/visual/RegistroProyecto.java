@@ -37,7 +37,7 @@ import logico.Programador;
 import logico.Proyecto;
 import logico.Trabajador;
 import javax.swing.border.LineBorder;
-
+//aaaaaaaaa
 public class RegistroProyecto extends JDialog {
 	protected static final JOptionPane OptionPane = null;
 	private JTextField txtidProyecto;

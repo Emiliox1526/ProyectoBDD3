@@ -21,7 +21,7 @@ import javax.swing.border.TitledBorder;
 import logico.Cliente;
 import logico.Empresa;
 import javax.swing.border.LineBorder;
-
+//aaaaaaaaa
 public class RegistroCliente extends JDialog {
 
     private final JPanel contentPanel = new JPanel();

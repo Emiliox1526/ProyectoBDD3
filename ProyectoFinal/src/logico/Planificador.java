@@ -1,7 +1,7 @@
 package logico;
 
 import java.sql.Date;
-
+//aaaaaaaaa
 public class Planificador extends Trabajador {
 	private int frecuenciaDePlanificacion;
 

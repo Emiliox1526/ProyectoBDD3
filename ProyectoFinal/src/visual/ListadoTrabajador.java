@@ -48,7 +48,7 @@ public class ListadoTrabajador extends JDialog {
 	private JTable table;
 	Empresa empresa = Empresa.cargarEmpresa("controlador.dat");
 	
-	
+	//aaaaaaaaa
 
 	/**
 	 * Launch the application.

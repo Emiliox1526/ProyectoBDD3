@@ -23,7 +23,7 @@ import javax.swing.border.LineBorder;
 
 import logico.Control;
 import logico.User;
-
+//aaaaaaaaa
 public class regUser extends JDialog {
 
     private final JPanel contentPanel = new JPanel();

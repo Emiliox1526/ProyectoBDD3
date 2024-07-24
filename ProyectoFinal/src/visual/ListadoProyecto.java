@@ -203,7 +203,7 @@ public class ListadoProyecto extends JDialog {
 			contentPanel.add(lblNewLabel);
 			lblNewLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 15));
 		}
-		
+		//aaaaaaaaa
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));

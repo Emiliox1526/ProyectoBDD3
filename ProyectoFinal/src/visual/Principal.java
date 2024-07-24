@@ -23,7 +23,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 
 import logico.Control;
-
+//aaaaaaaaa
 public class Principal extends JFrame {
 
     private JPanel contentPane;

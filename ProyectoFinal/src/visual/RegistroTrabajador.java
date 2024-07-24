@@ -45,7 +45,7 @@ import java.awt.event.MouseEvent;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-
+//aaaaaaaaa
 public class RegistroTrabajador extends JDialog {
 	int backup = 0;
 	private JTextField Cedula;

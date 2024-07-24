@@ -73,7 +73,7 @@ public class ListadoClientes extends JDialog {
         lblNewLabel_1.setBounds(10, 11, 82, 14);
         panel_1.add(lblNewLabel_1);
         lblNewLabel_1.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
-        
+      //aaaaaaaaa
         JLabel lblNewLabel_2 = new JLabel("ID:");
         lblNewLabel_2.setBounds(10, 49, 30, 14);
         panel_1.add(lblNewLabel_2);

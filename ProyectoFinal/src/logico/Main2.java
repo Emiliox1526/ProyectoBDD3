@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import Conexion.SQL;
-
+//aaaaaaaaa
 public class Main2 {
     public static void main(String[] args) {
         Connection connection = SQL.getConnection();

@@ -6,7 +6,7 @@ import java.sql.Date;
 public class Diseñador extends Trabajador implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private int cantAgnoExp;
-
+	//aaaaaaaaa
 	
 	public Diseñador(String cedula, String nombre, String apellidos, String direccionParticular, String sexo,
 			java.util.Date fecha, String evaluacionAnual, int cantAgnoExp,int cantProyectosFallidos, int cantProyectos) {
