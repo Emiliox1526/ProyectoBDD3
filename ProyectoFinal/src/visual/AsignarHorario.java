@@ -3,26 +3,21 @@ package visual;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
-import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
 
 import Conexion.SQL;
 
 public class AsignarHorario extends JDialog {
 
     private final JPanel contentPanel = new JPanel();
-    private static DefaultTableModel modelHorario;
-    private static DefaultTableModel modelGrupo;
-    private int indexSeleccionadoHorario = -1;
-    private int indexSeleccionadoGrupo = -1;
-    private JTable tableHorario;
+    private DefaultTableModel modelGrupo;
     private JTable tableGrupo;
-    ArrayList<String> listaHorario = new ArrayList<>();
-    ArrayList<String> listaGrupo = new ArrayList<>();
+    private JComboBox<String> comboBoxHorasInicio;
+    private JComboBox<String> comboBoxHorasFin;
+    private JToggleButton[] dayButtons;
 
     public static void main(String[] args) {
         try {
@@ -35,236 +30,224 @@ public class AsignarHorario extends JDialog {
     }
 
     public AsignarHorario() {
-        String[] header = {"Seleccionar", "ID Periodo", "ID Asignatura", "Numero del Grupo", "Cupo del Grupo", "Horario"};
-        String[] headerHorario = {"Seleccionar", "ID Periodo", "ID Asignatura", "Numero del Grupo", "Numero dia Semana", "Fecha Hora Inicio", "Fecha Hora Fin"};
-        modelHorario = new DefaultTableModel() {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return column == 0; 
-            }
+        initializeModels();
+        initializeUI();
+        loadGrupo();
+    }
 
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 0) {
-                    return Boolean.class; 
-                }
-                return super.getColumnClass(columnIndex);
-            }
-        };
-        modelHorario.setColumnIdentifiers(headerHorario);
-        
+    private void initializeModels() {
+        String[] header = {"Seleccionar", "IdPeriodo", "IDAsignatura", "[Numero Del Grupo]","[Numero dia Semana]","[Fecha Hora Inicio]","[Fecha Hora Fin]"};
 
         modelGrupo = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 0; 
+                return column == 0;
             }
 
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 0) {
-                    return Boolean.class; 
-                }
-                return super.getColumnClass(columnIndex);
+                return columnIndex == 0 ? Boolean.class : super.getColumnClass(columnIndex);
             }
         };
         modelGrupo.setColumnIdentifiers(header);
+    }
 
-        setBounds(100, 100, 719, 678);
+    private void initializeUI() {
+        setBounds(100, 100, 800, 600);
         getContentPane().setLayout(new BorderLayout());
-        contentPanel.setBorder(new LineBorder(new Color(160, 82, 45), 2, true));
-        contentPanel.setBackground(new Color(230, 230, 250));
+        contentPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
+        contentPanel.setBackground(Color.WHITE);
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
 
-        JPanel panel = new JPanel();
-        panel.setBorder(new LineBorder(new Color(0, 0, 0)));
-        panel.setBackground(Color.WHITE);
-        panel.setBounds(10, 11, 677, 249); 
-        contentPanel.add(panel);
-        panel.setLayout(new BorderLayout());
-
-        tableHorario = new JTable(modelHorario);
-        tableHorario.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(new JCheckBox()));
-        tableHorario.getColumnModel().getColumn(0).setCellRenderer(new TableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                JRadioButton radioButton = new JRadioButton();
-                if (value != null) {
-                    radioButton.setSelected((Boolean) value);
-                }
-                return radioButton;
-            }
-        });
-        JScrollPane scrollPane = new JScrollPane(tableHorario);
-        panel.add(scrollPane, BorderLayout.CENTER); // Agregar el JScrollPane al panel
-        
-        JPanel panel_1 = new JPanel();
-        panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
-        panel_1.setBackground(Color.WHITE);
-        panel_1.setBounds(10, 287, 677, 249);
-        contentPanel.add(panel_1);
-        panel_1.setLayout(new BorderLayout());
+        // Table for group
+        JPanel panelGrupo = new JPanel();
+        panelGrupo.setBorder(new LineBorder(new Color(0, 0, 0)));
+        panelGrupo.setBackground(Color.WHITE);
+        panelGrupo.setBounds(10, 11, 764, 300);
+        contentPanel.add(panelGrupo);
+        panelGrupo.setLayout(new BorderLayout());
 
         tableGrupo = new JTable(modelGrupo);
-        tableGrupo.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(new JCheckBox()));
-        tableGrupo.getColumnModel().getColumn(0).setCellRenderer(new TableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                JRadioButton radioButton = new JRadioButton();
-                if (value != null) {
-                    radioButton.setSelected((Boolean) value);
-                }
-                return radioButton;
-            }
-        });
-        JScrollPane scrollPane1 = new JScrollPane(tableGrupo);
-        panel_1.add(scrollPane1, BorderLayout.CENTER); // Agregar el JScrollPane al panel_1
+        JScrollPane scrollPaneGrupo = new JScrollPane(tableGrupo);
+        panelGrupo.add(scrollPaneGrupo, BorderLayout.CENTER);
 
+        // ComboBoxes for hours
+        comboBoxHorasInicio = new JComboBox<>(getAvailableHours());
+        comboBoxHorasInicio.setBounds(10, 350, 100, 30);
+        contentPanel.add(comboBoxHorasInicio);
+
+        comboBoxHorasFin = new JComboBox<>(getAvailableHours());
+        comboBoxHorasFin.setBounds(120, 350, 100, 30);
+        contentPanel.add(comboBoxHorasFin);
+
+        // Buttons for days of the week
+        JPanel daysPanel = new JPanel();
+        daysPanel.setBounds(10, 400, 500, 30);
+        daysPanel.setLayout(new GridLayout(1, 5));
+        contentPanel.add(daysPanel);
+
+        dayButtons = new JToggleButton[5];
+        String[] days = {"Lun", "Mar", "Mie", "Jue", "Vie"};
+        for (int i = 0; i < days.length; i++) {
+            dayButtons[i] = new JToggleButton(days[i]);
+            dayButtons[i].addActionListener(new DayButtonListener());
+            daysPanel.add(dayButtons[i]);
+        }
+
+        // Button Panel
         JPanel buttonPane = new JPanel();
         buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
         JButton btnAsignar = new JButton("Asignar");
-        btnAsignar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                asignarHorario();
-            }
-        });
+        btnAsignar.addActionListener(e -> asignarHorario());
         btnAsignar.setActionCommand("OK");
+        btnAsignar.setBackground(Color.GREEN);
         buttonPane.add(btnAsignar);
 
         JButton cancelButton = new JButton("Cancelar");
-        cancelButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
+        cancelButton.addActionListener(e -> dispose());
         cancelButton.setActionCommand("Cancel");
+        cancelButton.setBackground(Color.RED);
         buttonPane.add(cancelButton);
-
-        loadGrupo();
-        loadHorario();
     }
 
     private void loadGrupo() {
-        Connection connection = SQL.getConnection();
-        if (connection != null) {
-            try {
-                Statement stmt = connection.createStatement();
-                String query = ("SELECT * FROM Grupo");
-                ResultSet rs = stmt.executeQuery(query);
-
-                while (rs.next()) {
-                    Object[] row = new Object[6];
-                    row[0] = false; // Valor inicial del radio button
-                    row[1] = rs.getString("IdPeriodo");
-                    row[2] = rs.getString("IdAsignatura");
-                    row[3] = rs.getString("Numero Del Grupo");
-                    row[4] = rs.getInt("Cupo del Grupo");
-                    row[5] = rs.getString("Horario");
-                    modelGrupo.addRow(row);
+        try (Connection connection = SQL.getConnection()) {
+            if (connection != null) {
+                try (Statement stmt = connection.createStatement()) {
+                    String query = "SELECT * FROM [Horario de un Grupo]";
+                    try (ResultSet rs = stmt.executeQuery(query)) {
+                        while (rs.next()) {
+                            Object[] row = {
+                                false,
+                                rs.getString("IdPeriodo"),
+                                rs.getString("IdAsignatura"),
+                                rs.getString("Numero Del Grupo"),
+                                rs.getShort("Numero dia Semana"),
+                                rs.getTimestamp("Fecha Hora Inicio"),
+                                rs.getTimestamp("Fecha Hora Fin")
+                            };
+                            modelGrupo.addRow(row);
+                        }
+                    }
                 }
-
-                rs.close();
-                stmt.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-        }
-    }
-
-    private void loadHorario() {
-        Connection connection = SQL.getConnection();
-        if (connection != null) {
-            try {
-                Statement stmt = connection.createStatement();
-                String query = ("SELECT * FROM [HorarioGrupo]");
-                ResultSet rs = stmt.executeQuery(query);
-
-                while (rs.next()) {
-                    Object[] row = new Object[7];
-                    row[0] = false; // Valor inicial del radio button
-                    row[1] = rs.getString("IdPeriodo");
-                    row[2] = rs.getString("IdAsignatura");
-                    row[3] = rs.getString("Numero Del Grupo");
-                    row[4] = rs.getInt("Numero dia Semana");
-                    row[5] = rs.getTimestamp("Fecha Hora Inicio");
-                    row[6] = rs.getTimestamp("Fecha Hora Fin");
-                    modelHorario.addRow(row);
-                }
-
-                rs.close();
-                stmt.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     private void asignarHorario() {
-        // Intentar asignar desde tableHorario
-        boolean horarioAsignado = asignarDesdeTabla(tableHorario, modelHorario, "[HorarioGrupo]");
-
-        // Si no se asignó desde tableHorario, intentar asignar desde tableGrupo
-        if (!horarioAsignado) {
-            boolean grupoAsignado = asignarDesdeTabla(tableGrupo, modelGrupo, "[HorarioGrupo]");
-            if (grupoAsignado) {
-                JOptionPane.showMessageDialog(this, "Grupo asignado exitosamente.");
-            } else {
-                JOptionPane.showMessageDialog(this, "Debe seleccionar un grupo en la tabla de grupo.");
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Horario asignado exitosamente.");
-        }
-    }
-
-    private boolean asignarDesdeTabla(JTable table, DefaultTableModel model, String tableName) {
         int selectedRow = -1;
-        for (int i = 0; i < table.getRowCount(); i++) {
-            Boolean isSelected = (Boolean) table.getValueAt(i, 0);
-            if (isSelected != null && isSelected) {
+        for (int i = 0; i < modelGrupo.getRowCount(); i++) {
+            if ((Boolean) modelGrupo.getValueAt(i, 0)) {
                 selectedRow = i;
                 break;
             }
         }
 
-        if (selectedRow != -1) {
-            String idPeriodo = (String) table.getValueAt(selectedRow, 1);
-            String idAsignatura = (String) table.getValueAt(selectedRow, 2);
-            String numeroGrupo = (String) table.getValueAt(selectedRow, 3);
-            // Recolecta los otros datos necesarios para el INSERT
-            Object[] rowData = new Object[] {
-                idPeriodo, idAsignatura, numeroGrupo, 
-                table.getValueAt(selectedRow, 4), 
-                table.getValueAt(selectedRow, 5),
-                table.getValueAt(selectedRow, 6)
-            };
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Debes seleccionar un grupo.");
+            return;
+        }
 
-            Connection connection = SQL.getConnection();
-            if (connection != null) {
-                try {
-                    String query = "INSERT INTO " + tableName + " (IdPeriodo, IdAsignatura, [Numero Del Grupo], [Numero dia Semana], [Fecha Hora Inicio], [Fecha Hora Fin]) VALUES (?, ?, ?, ?, ?, ?)";
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-                    pstmt.setString(1, (String) rowData[0]);
-                    pstmt.setString(2, (String) rowData[1]);
-                    pstmt.setString(3, (String) rowData[2]);
-                    pstmt.setShort(4, (Short) rowData[3]);
-                    pstmt.setTimestamp(5, (Timestamp) rowData[4]);
-                    pstmt.setTimestamp(6, (Timestamp) rowData[5]);
+        String idPeriodo = (String) modelGrupo.getValueAt(selectedRow, 1);
+        String idAsignatura = (String) modelGrupo.getValueAt(selectedRow, 2);
+        String numeroDelGrupo = (String) modelGrupo.getValueAt(selectedRow, 3);
 
-                    pstmt.executeUpdate();
-                    pstmt.close();
-                    connection.close();
-                    return true;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    JOptionPane.showMessageDialog(this, "Error al asignar el horario.");
-                }
+        String horaInicio = (String) comboBoxHorasInicio.getSelectedItem();
+        String horaFin = (String) comboBoxHorasFin.getSelectedItem();
+
+        int startHour = get24HourFormat(horaInicio);
+        int endHour = get24HourFormat(horaFin);
+        if (startHour >= endHour) {
+            JOptionPane.showMessageDialog(this, "La hora de inicio debe ser antes de la hora de fin.");
+            return;
+        }
+
+        StringBuilder horario = new StringBuilder();
+        for (JToggleButton button : dayButtons) {
+            if (button.isSelected()) {
+                horario.append(button.getText()).append(" ");
             }
         }
-        return false;
+
+        if (horario.length() == 0) {
+            JOptionPane.showMessageDialog(this, "Debes seleccionar al menos un día.");
+            return;
+        }
+
+        try (Connection connection = SQL.getConnection()) {
+            if (connection != null) {
+                String query = "INSERT INTO [Horario de un Grupo] (IdPeriodo, IdAsignatura, [Numero Del Grupo], [Numero dia Semana], [Fecha Hora Inicio], [Fecha Hora Fin]) VALUES (?, ?, ?, ?, ?, ?)";
+                try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+                    for (JToggleButton button : dayButtons) {
+                        if (button.isSelected()) {
+                            int dayNumber = getDayNumber(button.getText());
+                            // Validate dayNumber before setting it
+                            if (dayNumber == 0) {
+                                throw new SQLException("Invalid day number: " + button.getText());
+                            }
+                            pstmt.setString(1, idPeriodo);
+                            pstmt.setString(2, idAsignatura);
+                            pstmt.setString(3, numeroDelGrupo);
+                            pstmt.setInt(4, dayNumber);
+                            pstmt.setTimestamp(5, Timestamp.valueOf("2024-01-01 " + startHour + ":00:00"));
+                            pstmt.setTimestamp(6, Timestamp.valueOf("2024-01-01 " + endHour + ":00:00"));
+                            pstmt.addBatch();
+                        }
+                    }
+                    pstmt.executeBatch();
+                }
+                JOptionPane.showMessageDialog(this, "Horario asignado correctamente.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al asignar el horario: " + e.getMessage());
+        }
+    }
+
+    private int get24HourFormat(String time) {
+        String[] parts = time.split(" ");
+        int hour = Integer.parseInt(parts[0].split(":")[0]);
+        if (parts[1].equalsIgnoreCase("PM") && hour != 12) {
+            hour += 12;
+        } else if (parts[1].equalsIgnoreCase("AM") && hour == 12) {
+            hour = 0;
+        }
+        return hour;
+    }
+
+    private int getDayNumber(String day) {
+        switch (day) {
+            case "Lun": return 1;
+            case "Mar": return 2;
+            case "Mie": return 3;
+            case "Jue": return 4;
+            case "Vie": return 5;
+            default: return 0; // Esto debe ser manejado o validado
+        }
+    }
+
+    private String[] getAvailableHours() {
+        String[] hours = new String[48];
+        int index = 0;
+
+        for (int hour = 8; hour <= 21; hour++) {
+            hours[index++] = String.format("%d:00 %s", (hour > 12 ? hour - 12 : hour), (hour >= 12 ? "PM" : "AM"));
+            hours[index++] = String.format("%d:30 %s", (hour > 12 ? hour - 12 : hour), (hour >= 12 ? "PM" : "AM"));
+        }
+
+        return hours;
+    }
+
+    private class DayButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JToggleButton button = (JToggleButton) e.getSource();
+            button.setBackground(button.isSelected() ? Color.GREEN : null);
+        }
     }
 }
