@@ -12,21 +12,21 @@ import javax.swing.table.TableColumn;
 
 import Conexion.SQL;
 
-public class AsignarHorario extends JDialog {
+public class InscribirGrupo extends JDialog {
 
     private final JPanel contentPanel = new JPanel();
-    private static DefaultTableModel modelHorario;
+    private static DefaultTableModel modelEstudiante;
     private static DefaultTableModel modelGrupo;
-    private int indexSeleccionadoHorario = -1;
+    private int indexSeleccionadoEstudiante = -1;
     private int indexSeleccionadoGrupo = -1;
-    private JTable tableHorario;
+    private JTable tableEstudiante;
     private JTable tableGrupo;
     ArrayList<String> listaHorario = new ArrayList<>();
     ArrayList<String> listaGrupo = new ArrayList<>();
 
     public static void main(String[] args) {
         try {
-            AsignarHorario dialog = new AsignarHorario();
+            InscribirGrupo dialog = new InscribirGrupo();
             dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             dialog.setVisible(true);
         } catch (Exception e) {
@@ -34,10 +34,10 @@ public class AsignarHorario extends JDialog {
         }
     }
 
-    public AsignarHorario() {
+    public InscribirGrupo() {
         String[] header = {"Seleccionar", "ID Periodo", "ID Asignatura", "Numero del Grupo", "Cupo del Grupo", "Horario"};
-        String[] headerHorario = {"Seleccionar", "ID Periodo", "ID Asignatura", "Numero del Grupo", "Numero dia Semana", "Fecha Hora Inicio", "Fecha Hora Fin"};
-        modelHorario = new DefaultTableModel() {
+        String[] headerEstudiante = {"Seleccionar", "ID Estudiante", "Nombre", "Apellido", "ID Carrera", "ID Categoria", "ID Nacionalidad", "Direccion"};
+        modelEstudiante = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return column == 0; 
@@ -51,7 +51,7 @@ public class AsignarHorario extends JDialog {
                 return super.getColumnClass(columnIndex);
             }
         };
-        modelHorario.setColumnIdentifiers(headerHorario);
+        modelEstudiante.setColumnIdentifiers(headerEstudiante);
         
 
         modelGrupo = new DefaultTableModel() {
@@ -70,7 +70,7 @@ public class AsignarHorario extends JDialog {
         };
         modelGrupo.setColumnIdentifiers(header);
 
-        setBounds(100, 100, 719, 678);
+        setBounds(100, 100, 750, 678);
         getContentPane().setLayout(new BorderLayout());
         contentPanel.setBorder(new LineBorder(new Color(160, 82, 45), 2, true));
         contentPanel.setBackground(new Color(230, 230, 250));
@@ -80,13 +80,13 @@ public class AsignarHorario extends JDialog {
         JPanel panel = new JPanel();
         panel.setBorder(new LineBorder(new Color(0, 0, 0)));
         panel.setBackground(Color.WHITE);
-        panel.setBounds(10, 11, 677, 249); 
+        panel.setBounds(10, 11, 703, 249); 
         contentPanel.add(panel);
         panel.setLayout(new BorderLayout());
 
-        tableHorario = new JTable(modelHorario);
-        tableHorario.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(new JCheckBox()));
-        tableHorario.getColumnModel().getColumn(0).setCellRenderer(new TableCellRenderer() {
+        tableEstudiante = new JTable(modelEstudiante);
+        tableEstudiante.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(new JCheckBox()));
+        tableEstudiante.getColumnModel().getColumn(0).setCellRenderer(new TableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 JRadioButton radioButton = new JRadioButton();
@@ -96,13 +96,13 @@ public class AsignarHorario extends JDialog {
                 return radioButton;
             }
         });
-        JScrollPane scrollPane = new JScrollPane(tableHorario);
+        JScrollPane scrollPane = new JScrollPane(tableEstudiante);
         panel.add(scrollPane, BorderLayout.CENTER); // Agregar el JScrollPane al panel
         
         JPanel panel_1 = new JPanel();
         panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
         panel_1.setBackground(Color.WHITE);
-        panel_1.setBounds(10, 287, 677, 249);
+        panel_1.setBounds(10, 287, 703, 249);
         contentPanel.add(panel_1);
         panel_1.setLayout(new BorderLayout());
 
@@ -119,16 +119,16 @@ public class AsignarHorario extends JDialog {
             }
         });
         JScrollPane scrollPane1 = new JScrollPane(tableGrupo);
-        panel_1.add(scrollPane1, BorderLayout.CENTER); // Agregar el JScrollPane al panel_1
+        panel_1.add(scrollPane1, BorderLayout.CENTER); 
 
         JPanel buttonPane = new JPanel();
         buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-        JButton btnAsignar = new JButton("Asignar");
+        JButton btnAsignar = new JButton("Inscribir");
         btnAsignar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                asignarHorario();
+                asignarEstudiante();
             }
         });
         btnAsignar.setActionCommand("OK");
@@ -144,7 +144,7 @@ public class AsignarHorario extends JDialog {
         buttonPane.add(cancelButton);
 
         loadGrupo();
-        loadHorario();
+        loadEstudiante();
     }
 
     private void loadGrupo() {
@@ -175,24 +175,25 @@ public class AsignarHorario extends JDialog {
         }
     }
 
-    private void loadHorario() {
+    private void loadEstudiante() {
         Connection connection = SQL.getConnection();
         if (connection != null) {
             try {
                 Statement stmt = connection.createStatement();
-                String query = ("SELECT * FROM [HorarioGrupo]");
+                String query = ("SELECT * FROM [Estudiante]");
                 ResultSet rs = stmt.executeQuery(query);
 
                 while (rs.next()) {
-                    Object[] row = new Object[7];
-                    row[0] = false; // Valor inicial del radio button
-                    row[1] = rs.getString("IdPeriodo");
-                    row[2] = rs.getString("IdAsignatura");
-                    row[3] = rs.getString("Numero Del Grupo");
-                    row[4] = rs.getInt("Numero dia Semana");
-                    row[5] = rs.getTimestamp("Fecha Hora Inicio");
-                    row[6] = rs.getTimestamp("Fecha Hora Fin");
-                    modelHorario.addRow(row);
+                    Object[] row = new Object[8];
+                    row[0] = false; 
+                    row[1] = rs.getString("IdEstudiante");
+                    row[2] = rs.getString("Nombre");
+                    row[3] = rs.getString("Apellido");
+                    row[4] = rs.getString("IdCarrera");
+                    row[5] = rs.getString("IdCategoriaPago");
+                    row[6] = rs.getString("IdNacionalidad");
+                    row[7] = rs.getString("Direccion");
+                    modelEstudiante.addRow(row);
                 }
 
                 rs.close();
@@ -204,12 +205,12 @@ public class AsignarHorario extends JDialog {
         }
     }
 
-    private void asignarHorario() {
-        // Intentar asignar desde tableHorario
-        boolean horarioAsignado = asignarDesdeTabla(tableHorario, modelHorario, "[HorarioGrupo]");
+    private void asignarEstudiante() {
+        // Intentar asignar desde tableEstudiante
+        boolean HorarioAsignado = asignarDesdeTabla(tableEstudiante, modelEstudiante, "[HorarioGrupo]");
 
-        // Si no se asignó desde tableHorario, intentar asignar desde tableGrupo
-        if (!horarioAsignado) {
+        // Si no se asignó desde tableEstudiante, intentar asignar desde tableGrupo
+        if (!HorarioAsignado) {
             boolean grupoAsignado = asignarDesdeTabla(tableGrupo, modelGrupo, "[HorarioGrupo]");
             if (grupoAsignado) {
                 JOptionPane.showMessageDialog(this, "Grupo asignado exitosamente.");
@@ -217,7 +218,7 @@ public class AsignarHorario extends JDialog {
                 JOptionPane.showMessageDialog(this, "Debe seleccionar un grupo en la tabla de grupo.");
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Horario asignado exitosamente.");
+            JOptionPane.showMessageDialog(this, "Estudiante asignado exitosamente.");
         }
     }
 
@@ -261,7 +262,7 @@ public class AsignarHorario extends JDialog {
                     return true;
                 } catch (Exception e) {
                     e.printStackTrace();
-                    JOptionPane.showMessageDialog(this, "Error al asignar el horario.");
+                    JOptionPane.showMessageDialog(this, "Error al asignar el Estudiante.");
                 }
             }
         }
