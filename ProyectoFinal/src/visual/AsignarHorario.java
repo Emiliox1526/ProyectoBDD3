@@ -117,7 +117,7 @@ public class AsignarHorario extends JDialog {
         try (Connection connection = SQL.getConnection()) {
             if (connection != null) {
                 try (Statement stmt = connection.createStatement()) {
-                    String query = "SELECT * FROM HorarioGrupo";
+                    String query = "SELECT * FROM Horario de un Grupo";
                     try (ResultSet rs = stmt.executeQuery(query)) {
                         while (rs.next()) {
                             Object[] row = {
@@ -181,7 +181,7 @@ public class AsignarHorario extends JDialog {
 
         try (Connection connection = SQL.getConnection()) {
             if (connection != null) {
-                String query = "INSERT INTO HorarioGrupo (IdPeriodo, IdAsignatura, [Numero Del Grupo], [Numero dia Semana], [Fecha Hora Inicio], [Fecha Hora Fin]) VALUES (?, ?, ?, ?, ?, ?)";
+                String query = "INSERT INTO Horario de un Grupo (IdPeriodo, IdAsignatura, [Numero Del Grupo], [Numero dia Semana], [Fecha Hora Inicio], [Fecha Hora Fin]) VALUES (?, ?, ?, ?, ?, ?)";
                 try (PreparedStatement pstmt = connection.prepareStatement(query)) {
                     for (JToggleButton button : dayButtons) {
                         if (button.isSelected()) {

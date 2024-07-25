@@ -302,7 +302,7 @@ public class InformeInscripccion extends JDialog {
                            "AND gi.IdAsignatura = g.IdAsignatura " +
                            "AND gi.[Numero Del Grupo] = g.[Numero Del Grupo] " +
                            "INNER JOIN [Asignatura] a ON g.IdAsignatura = a.IdAsignatura " +
-                           "INNER JOIN [HorarioGrupo] hg ON gi.IdPeriodo = hg.IdPeriodo " +
+                           "INNER JOIN [Horario de un Grupo] hg ON gi.IdPeriodo = hg.IdPeriodo " +
                            "AND gi.IdAsignatura = hg.IdAsignatura " +
                            "AND gi.[Numero Del Grupo] = hg.[Numero Del Grupo] " +
                            "WHERE gi.IdEstudiante = ?";

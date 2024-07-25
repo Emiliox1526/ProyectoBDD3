@@ -190,7 +190,7 @@ public class InscribirGrupo extends JDialog {
                     row[2] = rs.getString("Nombre");
                     row[3] = rs.getString("Apellido");
                     row[4] = rs.getString("IdCarrera");
-                    row[5] = rs.getString("IdCategoriaPago");
+                    row[5] = rs.getString("IdCategoriadePago");
                     row[6] = rs.getString("IdNacionalidad");
                     row[7] = rs.getString("Direccion");
                     modelEstudiante.addRow(row);
