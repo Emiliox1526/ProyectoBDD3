@@ -68,13 +68,16 @@ public class ActualizarHorario extends JDialog {
 
         JMenu menu = new JMenu("Opciones");
         menuBar.add(menu);
+       
 
         JMenuItem eliminarHorarioMenuItem = new JMenuItem("Eliminar Horario");
+        
         eliminarHorarioMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 EliminarHorario dialog = new EliminarHorario();
                 dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
                 dialog.setVisible(true);
+                
             }
         });
         menu.add(eliminarHorarioMenuItem);
