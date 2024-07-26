@@ -125,6 +125,7 @@ public class InscribirGrupo extends JDialog {
     }
 
     private void openEliminarEstudiante() {
+    	dispose();
         SeleccionarGrupo seleccionarGrupo = new SeleccionarGrupo();
         seleccionarGrupo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         seleccionarGrupo.setVisible(true);

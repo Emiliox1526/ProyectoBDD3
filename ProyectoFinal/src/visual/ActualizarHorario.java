@@ -74,6 +74,7 @@ public class ActualizarHorario extends JDialog {
         
         eliminarHorarioMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+            	dispose();
                 EliminarHorario dialog = new EliminarHorario();
                 dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
                 dialog.setVisible(true);
