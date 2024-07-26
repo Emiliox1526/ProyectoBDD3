@@ -6,7 +6,6 @@ import java.sql.*;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 
 import Conexion.SQL;
 
@@ -36,7 +35,7 @@ public class AsignarHorario extends JDialog {
     }
 
     private void initializeModels() {
-        String[] header = {"Seleccionar", "IdPeriodo", "IDAsignatura", "[Numero Del Grupo]","[Numero dia Semana]","[Fecha Hora Inicio]","[Fecha Hora Fin]"};
+        String[] header = {"Seleccionar", "IdPeriodo", "IDAsignatura", "[Numero Del Grupo]", "[Numero dia Semana]","[Fecha Hora Inicio]","[Fecha Hora Fin]"};
 
         modelGrupo = new DefaultTableModel() {
             @Override
@@ -73,11 +72,11 @@ public class AsignarHorario extends JDialog {
         panelGrupo.add(scrollPaneGrupo, BorderLayout.CENTER);
 
         // ComboBoxes for hours
-        comboBoxHorasInicio = new JComboBox<>(getAvailableHours());
+        comboBoxHorasInicio = new JComboBox<>(getAvailableStartHours());
         comboBoxHorasInicio.setBounds(10, 350, 100, 30);
         contentPanel.add(comboBoxHorasInicio);
 
-        comboBoxHorasFin = new JComboBox<>(getAvailableHours());
+        comboBoxHorasFin = new JComboBox<>(getAvailableEndHours());
         comboBoxHorasFin.setBounds(120, 350, 100, 30);
         contentPanel.add(comboBoxHorasFin);
 
@@ -91,7 +90,6 @@ public class AsignarHorario extends JDialog {
         String[] days = {"Lun", "Mar", "Mie", "Jue", "Vie"};
         for (int i = 0; i < days.length; i++) {
             dayButtons[i] = new JToggleButton(days[i]);
-            dayButtons[i].addActionListener(new DayButtonListener());
             daysPanel.add(dayButtons[i]);
         }
 
@@ -128,6 +126,7 @@ public class AsignarHorario extends JDialog {
                                 rs.getShort("Numero dia Semana"),
                                 rs.getTimestamp("Fecha Hora Inicio"),
                                 rs.getTimestamp("Fecha Hora Fin")
+                               
                             };
                             modelGrupo.addRow(row);
                         }
@@ -167,87 +166,100 @@ public class AsignarHorario extends JDialog {
             return;
         }
 
-        StringBuilder horario = new StringBuilder();
+        int daysSelected = 0;
         for (JToggleButton button : dayButtons) {
             if (button.isSelected()) {
-                horario.append(button.getText()).append(" ");
+                daysSelected++;
             }
         }
 
-        if (horario.length() == 0) {
-            JOptionPane.showMessageDialog(this, "Debes seleccionar al menos un día.");
+        if (daysSelected == 0 || daysSelected > 2) {
+            JOptionPane.showMessageDialog(this, "Debes seleccionar entre 1 y 2 días.");
             return;
         }
 
         try (Connection connection = SQL.getConnection()) {
             if (connection != null) {
-                String query = "INSERT INTO [Horario de un Grupo] (IdPeriodo, IdAsignatura, [Numero Del Grupo], [Numero dia Semana], [Fecha Hora Inicio], [Fecha Hora Fin]) VALUES (?, ?, ?, ?, ?, ?)";
-                try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+                String deleteQuery = "DELETE FROM [Horario de un Grupo] WHERE IdPeriodo = ? AND IdAsignatura = ? AND [Numero Del Grupo] = ?";
+                try (PreparedStatement deletePstmt = connection.prepareStatement(deleteQuery)) {
+                    deletePstmt.setString(1, idPeriodo);
+                    deletePstmt.setString(2, idAsignatura);
+                    deletePstmt.setString(3, numeroDelGrupo);
+                    deletePstmt.executeUpdate();
+                }
+
+                String insertQuery = "INSERT INTO [Horario de un Grupo] (IdPeriodo, IdAsignatura, [Numero Del Grupo], [Numero dia Semana], [Fecha Hora Inicio], [Fecha Hora Fin]) VALUES (?, ?, ?, ?, ?, ?)";
+                try (PreparedStatement insertPstmt = connection.prepareStatement(insertQuery)) {
                     for (JToggleButton button : dayButtons) {
                         if (button.isSelected()) {
-                            int dayNumber = getDayNumber(button.getText());
-                            // Validate dayNumber before setting it
-                            if (dayNumber == 0) {
-                                throw new SQLException("Invalid day number: " + button.getText());
-                            }
-                            pstmt.setString(1, idPeriodo);
-                            pstmt.setString(2, idAsignatura);
-                            pstmt.setString(3, numeroDelGrupo);
-                            pstmt.setInt(4, dayNumber);
-                            pstmt.setTimestamp(5, Timestamp.valueOf("2024-01-01 " + startHour + ":00:00"));
-                            pstmt.setTimestamp(6, Timestamp.valueOf("2024-01-01 " + endHour + ":00:00"));
-                            pstmt.addBatch();
+                            insertPstmt.setString(1, idPeriodo);
+                            insertPstmt.setString(2, idAsignatura);
+                            insertPstmt.setString(3, numeroDelGrupo);
+                            insertPstmt.setShort(4, (short) daysSelected); // Numero dia Semana como número de días
+                            insertPstmt.setTimestamp(5, Timestamp.valueOf("2024-01-01 " + horaInicio.split(" ")[0] + ":00"));
+                            insertPstmt.setTimestamp(6, Timestamp.valueOf("2024-01-01 " + horaFin.split(" ")[0] + ":00"));
+                            insertPstmt.addBatch();
                         }
                     }
-                    pstmt.executeBatch();
+                    insertPstmt.executeBatch();
+                    JOptionPane.showMessageDialog(this, "Horario asignado con éxito.");
+                    dispose();
                 }
-                JOptionPane.showMessageDialog(this, "Horario asignado correctamente.");
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error al asignar el horario: " + e.getMessage());
         }
     }
 
-    private int get24HourFormat(String time) {
-        String[] parts = time.split(" ");
-        int hour = Integer.parseInt(parts[0].split(":")[0]);
-        if (parts[1].equalsIgnoreCase("PM") && hour != 12) {
-            hour += 12;
-        } else if (parts[1].equalsIgnoreCase("AM") && hour == 12) {
-            hour = 0;
-        }
-        return hour;
-    }
 
-    private int getDayNumber(String day) {
-        switch (day) {
-            case "Lun": return 1;
-            case "Mar": return 2;
-            case "Mie": return 3;
-            case "Jue": return 4;
-            case "Vie": return 5;
-            default: return 0; // Esto debe ser manejado o validado
-        }
-    }
-
-    private String[] getAvailableHours() {
-        String[] hours = new String[48];
-        int index = 0;
-
-        for (int hour = 8; hour <= 21; hour++) {
-            hours[index++] = String.format("%d:00 %s", (hour > 12 ? hour - 12 : hour), (hour >= 12 ? "PM" : "AM"));
-            hours[index++] = String.format("%d:30 %s", (hour > 12 ? hour - 12 : hour), (hour >= 12 ? "PM" : "AM"));
-        }
-
+    private String[] getAvailableStartHours() {
+        String[] hours = {
+             "08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM",
+            "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM",
+            "06:00 PM", "07:00 PM", "08:00 PM", "09:00 PM"
+        };
         return hours;
     }
 
-    private class DayButtonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            JToggleButton button = (JToggleButton) e.getSource();
-            button.setBackground(button.isSelected() ? Color.GREEN : null);
+    
+    private String[] getAvailableEndHours() {
+        String[] hours = {
+            "09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM", "02:00 PM",
+            "03:00 PM", "04:00 PM", "05:00 PM", "06:00 PM", "07:00 PM", "08:00 PM",
+            "09:00 PM"
+        };
+        return hours;
+    }
+    
+
+
+    private int get24HourFormat(String hour) {
+        String[] parts = hour.split(" ");
+        int hourPart = Integer.parseInt(parts[0].split(":")[0]);
+        if (parts[1].equalsIgnoreCase("PM") && hourPart != 12) {
+            hourPart += 12;
+        } else if (parts[1].equalsIgnoreCase("AM") && hourPart == 12) {
+            hourPart = 0;
+        }
+        return hourPart;
+    }
+
+    private short getDayNumber(String day) {
+        switch (day) {
+            case "Lun":
+                return 1;
+            case "Mar":
+                return 1;
+            case "Mie":
+                return 1;
+            case "Jue":
+                return 1;
+            case "Vie":
+                return 1;
+            default:
+                return 0;
         }
     }
+
+   
 }
