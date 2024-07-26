@@ -9,12 +9,20 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.Vector;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -22,10 +30,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+
 import Conexion.SQL;
-import java.sql.PreparedStatement;
-import java.sql.Timestamp;
-import java.util.Vector;
 
 public class ActualizarHorario extends JDialog {
 
@@ -55,7 +61,24 @@ public class ActualizarHorario extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
         setLocationRelativeTo(null);
+      
         
+        JMenuBar menuBar = new JMenuBar();
+        setJMenuBar(menuBar);
+
+        JMenu menu = new JMenu("Opciones");
+        menuBar.add(menu);
+
+        JMenuItem eliminarHorarioMenuItem = new JMenuItem("Eliminar Horario");
+        eliminarHorarioMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                EliminarHorario dialog = new EliminarHorario();
+                dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                dialog.setVisible(true);
+            }
+        });
+        menu.add(eliminarHorarioMenuItem);
+
         String[] header = {"IdPeriodo", "IDAsignatura", "[Numero Del Grupo]", "[Numero dia Semana]", "[Fecha Hora Inicio]", "[Fecha Hora Fin]"};
         model = new DefaultTableModel();
         model.setColumnIdentifiers(header);
