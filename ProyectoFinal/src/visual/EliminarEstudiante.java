@@ -128,19 +128,31 @@ public class EliminarEstudiante extends JDialog {
 
         try (Connection connection = SQL.getConnection()) {
             if (connection != null) {
-                String query = "DELETE FROM [Grupos Inscritos] WHERE IdEstudiante = ? AND IdPeriodo = ? AND IdAsignatura = ? AND [Numero Del Grupo] = ?";
-                try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+                // Elimina al estudiante del grupo
+                String queryDelete = "DELETE FROM [Grupos Inscritos] WHERE IdEstudiante = ? AND IdPeriodo = ? AND IdAsignatura = ? AND [Numero Del Grupo] = ?";
+                try (PreparedStatement pstmt = connection.prepareStatement(queryDelete)) {
                     pstmt.setString(1, idEstudiante);
                     pstmt.setString(2, idPeriodo);
                     pstmt.setString(3, idAsignatura);
                     pstmt.setString(4, numeroDelGrupo);
                     pstmt.executeUpdate();
-                    JOptionPane.showMessageDialog(this, "Estudiante eliminado con éxito.");
-                    dispose();
                 }
+
+                // Actualiza el cupo del grupo
+                String queryUpdateCupo = "UPDATE [Grupo] SET [Cupo del Grupo] = [Cupo del Grupo] + 1 WHERE [IdPeriodo] = ? AND [IdAsignatura] = ? AND [Numero Del Grupo] = ?";
+                try (PreparedStatement pstmt = connection.prepareStatement(queryUpdateCupo)) {
+                    pstmt.setString(1, idPeriodo);
+                    pstmt.setString(2, idAsignatura);
+                    pstmt.setString(3, numeroDelGrupo);
+                    pstmt.executeUpdate();
+                }
+
+                JOptionPane.showMessageDialog(this, "Estudiante eliminado con éxito.");
+                dispose();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 }

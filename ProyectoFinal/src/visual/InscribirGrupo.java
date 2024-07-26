@@ -211,21 +211,32 @@ public class InscribirGrupo extends JDialog {
 
         try (Connection connection = SQL.getConnection()) {
             if (connection != null) {
-                // Cambia la consulta para insertar en la tabla correcta, por ejemplo, "Inscripciones"
-                String query = "INSERT INTO [Grupos Inscritos] (IdEstudiante, IdPeriodo, IdAsignatura, [Numero Del Grupo]) VALUES (?, ?, ?, ?)";
-                try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+                // Inserta el estudiante en el grupo
+                String queryInsert = "INSERT INTO [Grupos Inscritos] (IdEstudiante, IdPeriodo, IdAsignatura, [Numero Del Grupo]) VALUES (?, ?, ?, ?)";
+                try (PreparedStatement pstmt = connection.prepareStatement(queryInsert)) {
                     pstmt.setString(1, idEstudiante);
                     pstmt.setString(2, idPeriodo);
                     pstmt.setString(3, idAsignatura);
                     pstmt.setString(4, numeroDelGrupo);
                     pstmt.executeUpdate();
-                    JOptionPane.showMessageDialog(this, "Estudiante inscrito con éxito.");
-                    dispose();
                 }
+
+                // Actualiza el cupo del grupo
+                String queryUpdateCupo = "UPDATE [Grupo] SET [Cupo del Grupo] = [Cupo del Grupo] - 1 WHERE [IdPeriodo] = ? AND [IdAsignatura] = ? AND [Numero Del Grupo] = ?";
+                try (PreparedStatement pstmt = connection.prepareStatement(queryUpdateCupo)) {
+                    pstmt.setString(1, idPeriodo);
+                    pstmt.setString(2, idAsignatura);
+                    pstmt.setString(3, numeroDelGrupo);
+                    pstmt.executeUpdate();
+                }
+
+                JOptionPane.showMessageDialog(this, "Estudiante inscrito con éxito.");
+                dispose();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 }
 
