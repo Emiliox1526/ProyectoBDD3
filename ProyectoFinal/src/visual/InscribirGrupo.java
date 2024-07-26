@@ -71,7 +71,7 @@ public class InscribirGrupo extends JDialog {
         // Create menu bar
         JMenuBar menuBar = new JMenuBar();
         JMenu menu = new JMenu("Opciones");
-        JMenuItem menuItemEliminar = new JMenuItem("Eliminar Estudiante");
+        JMenuItem menuItemEliminar = new JMenuItem("Eliminar Estudiante de un Grupo");
         menuItemEliminar.addActionListener(e -> openEliminarEstudiante());
         menu.add(menuItemEliminar);
         menuBar.add(menu);

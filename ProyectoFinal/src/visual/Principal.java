@@ -22,8 +22,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 
-import logico.Control;
-//aaaaaaaaa
+
+
 public class Principal extends JFrame {
 
     private JPanel contentPane;
@@ -36,7 +36,7 @@ public class Principal extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    Principal frame = new Principal(null);
+                    Principal frame = new Principal();
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -48,8 +48,8 @@ public class Principal extends JFrame {
     /**
      * Create the frame.
      */
-    public Principal(Control control) {
-        setTitle("Empresa de programacion");
+    public Principal() {
+        setTitle("PUCMM");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 736, 355);
         contentPane = new JPanel();
@@ -67,7 +67,7 @@ public class Principal extends JFrame {
         ImageIcon adminIcon = new ImageIcon(Principal.class.getResource("/images/Admin.png"));
         Image adminImage = adminIcon.getImage().getScaledInstance(120, 122, Image.SCALE_SMOOTH);
 
-        JLabel lblNewLabel = new JLabel("Pagina Principal");
+        JLabel lblNewLabel = new JLabel("Centro Profesoral");
         lblNewLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
         lblNewLabel.setBounds(10, 11, 137, 22);
         contentPane.add(lblNewLabel);
@@ -75,17 +75,17 @@ public class Principal extends JFrame {
         JPanel panel_3 = new JPanel();
         panel_3.setForeground(new Color(153, 102, 102));
         panel_3.setBorder(new LineBorder(new Color(153, 102, 102), 2, true));
-        panel_3.setBounds(10, 39, 695, 254);
+        panel_3.setBounds(58, 44, 599, 254);
         contentPane.add(panel_3);
         panel_3.setLayout(null);
         
                 JPanel panel = new JPanel();
                 panel.setBackground(new Color(51, 204, 204));
-                panel.setBounds(48, 56, 120, 33);
+                panel.setBounds(28, 56, 172, 33);
                 panel_3.add(panel);
                 panel.setBorder(new LineBorder(new Color(0, 0, 0)));
                 
-                        JLabel lblNewLabel_1 = new JLabel("CLIENTES");
+                        JLabel lblNewLabel_1 = new JLabel("INSCRIBIR O ELIMINAR");
                         lblNewLabel_1.setForeground(new Color(255, 255, 255));
                         panel.add(lblNewLabel_1);
                         lblNewLabel_1.setFont(new Font("Yu Gothic Medium", Font.BOLD, 11));
@@ -93,7 +93,7 @@ public class Principal extends JFrame {
                                 JButton btnCliente = new JButton("");
                                 btnCliente.addActionListener(new ActionListener() {
                                 	public void actionPerformed(ActionEvent e) {
-                                		ListadoClientes c = new ListadoClientes();
+                                		InscribirGrupo c = new InscribirGrupo();
                                 		c.setModal(true);
                                 		c.setVisible(true);
                                 		
@@ -101,7 +101,7 @@ public class Principal extends JFrame {
                                 	
                                 });
                                 
-                                btnCliente.setBounds(48, 87, 120, 122);
+                                btnCliente.setBounds(28, 87, 172, 122);
                                 panel_3.add(btnCliente);
                                 btnCliente.setForeground(Color.WHITE);
                                 btnCliente.setIcon(new ImageIcon(clienteImage));
@@ -110,11 +110,11 @@ public class Principal extends JFrame {
                                 
                                         JPanel panel_1 = new JPanel();
                                         panel_1.setBackground(new Color(102, 204, 204));
-                                        panel_1.setBounds(210, 56, 120, 33);
+                                        panel_1.setBounds(242, 56, 120, 33);
                                         panel_3.add(panel_1);
                                         panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
                                         
-                                                JLabel lblTrabajadores_1 = new JLabel("TRABAJADORES");
+                                                JLabel lblTrabajadores_1 = new JLabel("INFORME");
                                                 lblTrabajadores_1.setForeground(new Color(255, 255, 255));
                                                 lblTrabajadores_1.setBackground(new Color(255, 255, 255));
                                                 lblTrabajadores_1.setFont(new Font("Yu Gothic Medium", Font.BOLD, 11));
@@ -123,12 +123,12 @@ public class Principal extends JFrame {
                                                         JButton btnTrabajador = new JButton("");
                                                         btnTrabajador.addActionListener(new ActionListener() {
                                                         	public void actionPerformed(ActionEvent e) {
-                                                        		ListadoTrabajador l = new ListadoTrabajador();
+                                                        		InformeInscripccion l = new InformeInscripccion();
                                                         		l.setModal(true);
                                                         		l.setVisible(true);
                                                         	}
                                                         });
-                                                        btnTrabajador.setBounds(210, 87, 120, 122);
+                                                        btnTrabajador.setBounds(242, 87, 120, 122);
                                                         panel_3.add(btnTrabajador);
                                                         btnTrabajador.setHorizontalAlignment(SwingConstants.LEFT);
                                                         btnTrabajador.setForeground(Color.WHITE);
@@ -138,11 +138,11 @@ public class Principal extends JFrame {
                                                         
                                                                 JPanel panel_2 = new JPanel();
                                                                 panel_2.setBackground(new Color(102, 204, 204));
-                                                                panel_2.setBounds(367, 56, 120, 33);
+                                                                panel_2.setBounds(416, 56, 120, 33);
                                                                 panel_3.add(panel_2);
                                                                 panel_2.setBorder(new LineBorder(new Color(0, 0, 0)));
                                                                 
-                                                                        JLabel lblProyectos_1 = new JLabel("PROYECTOS");
+                                                                        JLabel lblProyectos_1 = new JLabel("HORARIO");
                                                                         lblProyectos_1.setForeground(new Color(255, 255, 255));
                                                                         lblProyectos_1.setFont(new Font("Yu Gothic Medium", Font.BOLD, 11));
                                                                         panel_2.add(lblProyectos_1);
@@ -150,26 +150,20 @@ public class Principal extends JFrame {
                                                                                 JButton btnProyecto = new JButton("");
                                                                                 btnProyecto.addActionListener(new ActionListener() {
                                                                                 	public void actionPerformed(ActionEvent e) {
-                                                                                		ListadoProyecto listadoProyecto = new ListadoProyecto();
+                                                                                		HorarioEstudiante listadoProyecto = new HorarioEstudiante();
                                                                                 		listadoProyecto.setModal(true);
                                                                                 		listadoProyecto.setVisible(true);
                                                                                 		
                                                                                 	}
                                                                                 });
-                                                                                btnProyecto.setBounds(367, 87, 120, 122);
+                                                                                btnProyecto.setBounds(416, 87, 120, 122);
                                                                                 panel_3.add(btnProyecto);
                                                                                 btnProyecto.setForeground(Color.WHITE);
                                                                                 btnProyecto.setBackground(Color.WHITE);
                                                                                 btnProyecto.setIcon(new ImageIcon(proyectoImage));                                  
                                                                                 btnProyecto.setHorizontalAlignment(SwingConstants.CENTER);
                                                                                 JButton btnAdministracion = new JButton("");
-                                                                                btnAdministracion.addActionListener(new ActionListener() {
-                                                                                	public void actionPerformed(ActionEvent e) {
-                                                                                		MenuAdmin m = new MenuAdmin(control);
-                                                                                		m.setVisible(true);
-                                                                                		
-                                                                                	}
-                                                                                });
+                                                                              ;
                                                                                 btnAdministracion.setEnabled(false);
                                                                                 btnAdministracion.setForeground(Color.WHITE);
                                                                                 btnAdministracion.setBackground(Color.WHITE);
@@ -177,39 +171,8 @@ public class Principal extends JFrame {
                                                                                 btnAdministracion.setIcon(new ImageIcon(adminImage));
                                                                                 btnAdministracion.setBounds(520, 87, 120, 122);
                                                                                 
-                                                                                panel_3.add(btnAdministracion);
-                                                                                
-                                                                                JPanel panel_4 = new JPanel();
-                                                                                panel_4.setBackground(new Color(102, 204, 204));
-                                                                                panel_4.setBorder(new LineBorder(new Color(0, 0, 0)));
-                                                                                panel_4.setBounds(520, 56, 120, 33);
-                                                                                panel_3.add(panel_4);
-                                                                                
-                                                                                JLabel lblAdministracion = new JLabel("ADMINISTRACION");
-                                                                                lblAdministracion.setEnabled(false);
-                                                                                lblAdministracion.setForeground(new Color(255, 255, 255));
-                                                                                lblAdministracion.setFont(new Font("Yu Gothic Medium", Font.BOLD, 11));
-                                                                                panel_4.add(lblAdministracion);
-                                                                                
-                                                                                JLabel lblCuentaLogeada = new JLabel("Cuenta Logeada:");
-                                                                                lblCuentaLogeada.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
-                                                                                lblCuentaLogeada.setBounds(410, 11, 137, 22);
-                                                                                contentPane.add(lblCuentaLogeada);
-                                                                                
-                                                                                txtUser = new JTextField();
-                                                                                txtUser.setEditable(false);
-                                                                                txtUser.setBounds(528, 13, 177, 20);
-                                                                                contentPane.add(txtUser);
-                                                                                txtUser.setColumns(10);
-                                                                                if (control == null) {
-                                                                                	txtUser.setText("");
-																				} else {
-																					txtUser.setText(Control.getLoginUser().getUserName());
-																					if(Control.getLoginUser().getTipo().equals("Administrador")) {
-																						btnAdministracion.setEnabled(true);
-																						lblAdministracion.setEnabled(true);
-																					}
-																				}
-                                                                                
+                                                                              
+                                                                              
+                                                                     
     }
 }
