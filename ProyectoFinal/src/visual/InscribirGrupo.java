@@ -19,7 +19,7 @@ public class InscribirGrupo extends JDialog {
 
     public static void main(String[] args) {
         try {
-        	InscribirGrupo dialog = new InscribirGrupo();
+            InscribirGrupo dialog = new InscribirGrupo();
             dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             dialog.setVisible(true);
         } catch (Exception e) {
@@ -66,10 +66,20 @@ public class InscribirGrupo extends JDialog {
 
     private void initializeUI() {
         setBounds(100, 100, 800, 600);
-        getContentPane().setLayout(new BorderLayout());
+        setLayout(new BorderLayout());
+
+        // Create menu bar
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menu = new JMenu("Opciones");
+        JMenuItem menuItemEliminar = new JMenuItem("Eliminar Estudiante");
+        menuItemEliminar.addActionListener(e -> openEliminarEstudiante());
+        menu.add(menuItemEliminar);
+        menuBar.add(menu);
+        setJMenuBar(menuBar);
+
         contentPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
         contentPanel.setBackground(Color.WHITE);
-        getContentPane().add(contentPanel, BorderLayout.CENTER);
+        add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
 
         // Table for students
@@ -99,7 +109,7 @@ public class InscribirGrupo extends JDialog {
         // Button Panel
         JPanel buttonPane = new JPanel();
         buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-        getContentPane().add(buttonPane, BorderLayout.SOUTH);
+        add(buttonPane, BorderLayout.SOUTH);
 
         JButton btnInscribir = new JButton("Inscribir");
         btnInscribir.addActionListener(e -> inscribirEstudiante());
@@ -114,6 +124,11 @@ public class InscribirGrupo extends JDialog {
         buttonPane.add(cancelButton);
     }
 
+    private void openEliminarEstudiante() {
+        SeleccionarGrupo seleccionarGrupo = new SeleccionarGrupo();
+        seleccionarGrupo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        seleccionarGrupo.setVisible(true);
+    }
     private void loadEstudiantes() {
         try (Connection connection = SQL.getConnection()) {
             if (connection != null) {
@@ -140,7 +155,7 @@ public class InscribirGrupo extends JDialog {
         try (Connection connection = SQL.getConnection()) {
             if (connection != null) {
                 try (Statement stmt = connection.createStatement()) {
-                    String query = "SELECT * FROM [Horario de un Grupo]";
+                    String query = "SELECT * FROM HorarioGrupo";
                     try (ResultSet rs = stmt.executeQuery(query)) {
                         while (rs.next()) {
                             Object[] row = {
@@ -189,19 +204,21 @@ public class InscribirGrupo extends JDialog {
             return;
         }
 
-       
+        String idEstudiante = (String) modelEstudiante.getValueAt(selectedEstudiante, 1);
         String idPeriodo = (String) modelGrupo.getValueAt(selectedGrupo, 1);
         String idAsignatura = (String) modelGrupo.getValueAt(selectedGrupo, 2);
         String numeroDelGrupo = (String) modelGrupo.getValueAt(selectedGrupo, 3);
 
         try (Connection connection = SQL.getConnection()) {
             if (connection != null) {
-                String query = "INSERT INTO [Horario de un Grupo] ( IdPeriodo, IdAsignatura, NumeroDelGrupo) VALUES (?, ?, ?, ?)";
+                // Cambia la consulta para insertar en la tabla correcta, por ejemplo, "Inscripciones"
+                String query = "INSERT INTO [Grupos Inscritos] (IdEstudiante, IdPeriodo, IdAsignatura, [Numero Del Grupo]) VALUES (?, ?, ?, ?)";
                 try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-                    pstmt.setString(1, idPeriodo);
-                    pstmt.setString(2, idAsignatura);
-                    pstmt.setString(3, numeroDelGrupo);
-                 
+                    pstmt.setString(1, idEstudiante);
+                    pstmt.setString(2, idPeriodo);
+                    pstmt.setString(3, idAsignatura);
+                    pstmt.setString(4, numeroDelGrupo);
+                    pstmt.executeUpdate();
                     JOptionPane.showMessageDialog(this, "Estudiante inscrito con éxito.");
                     dispose();
                 }
@@ -211,3 +228,4 @@ public class InscribirGrupo extends JDialog {
         }
     }
 }
+

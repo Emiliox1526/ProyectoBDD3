@@ -103,7 +103,7 @@ public class EliminarHorario extends JDialog {
         if (connection != null) {
             try {
                 Statement stmt = connection.createStatement();
-                String query = ("SELECT * FROM [Horario de un Grupo]");
+                String query = ("SELECT * FROM HorarioGrupo");
                 ResultSet rs = stmt.executeQuery(query);
 
                 while (rs.next()) {
@@ -148,7 +148,7 @@ public class EliminarHorario extends JDialog {
             Connection connection = SQL.getConnection();
             if (connection != null) {
                 try {
-                    String query = "DELETE FROM [Horario de un Grupo] WHERE [IdPeriodo] = ? AND [IdAsignatura] = ? AND [Numero Del Grupo] = ? AND [Numero dia Semana] = ? AND [Fecha Hora Inicio] = ?";
+                    String query = "DELETE FROM HorarioGrupo WHERE [IdPeriodo] = ? AND [IdAsignatura] = ? AND [Numero Del Grupo] = ? AND [Numero dia Semana] = ? AND [Fecha Hora Inicio] = ?";
                     PreparedStatement pstmt = connection.prepareStatement(query);
                     pstmt.setString(1, idPeriodo);
                     pstmt.setString(2, idAsignatura);

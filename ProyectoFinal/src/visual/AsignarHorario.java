@@ -115,7 +115,7 @@ public class AsignarHorario extends JDialog {
         try (Connection connection = SQL.getConnection()) {
             if (connection != null) {
                 try (Statement stmt = connection.createStatement()) {
-                    String query = "SELECT * FROM [Horario de un Grupo]";
+                    String query = "SELECT * FROM HorarioGrupo";
                     try (ResultSet rs = stmt.executeQuery(query)) {
                         while (rs.next()) {
                             Object[] row = {
@@ -180,7 +180,7 @@ public class AsignarHorario extends JDialog {
 
         try (Connection connection = SQL.getConnection()) {
             if (connection != null) {
-                String deleteQuery = "DELETE FROM [Horario de un Grupo] WHERE IdPeriodo = ? AND IdAsignatura = ? AND [Numero Del Grupo] = ?";
+                String deleteQuery = "DELETE FROM HorarioGrupo WHERE IdPeriodo = ? AND IdAsignatura = ? AND [Numero Del Grupo] = ?";
                 try (PreparedStatement deletePstmt = connection.prepareStatement(deleteQuery)) {
                     deletePstmt.setString(1, idPeriodo);
                     deletePstmt.setString(2, idAsignatura);
@@ -188,7 +188,7 @@ public class AsignarHorario extends JDialog {
                     deletePstmt.executeUpdate();
                 }
 
-                String insertQuery = "INSERT INTO [Horario de un Grupo] (IdPeriodo, IdAsignatura, [Numero Del Grupo], [Numero dia Semana], [Fecha Hora Inicio], [Fecha Hora Fin]) VALUES (?, ?, ?, ?, ?, ?)";
+                String insertQuery = "INSERT INTO HorarioGrupo (IdPeriodo, IdAsignatura, [Numero Del Grupo], [Numero dia Semana], [Fecha Hora Inicio], [Fecha Hora Fin]) VALUES (?, ?, ?, ?, ?, ?)";
                 try (PreparedStatement insertPstmt = connection.prepareStatement(insertQuery)) {
                     for (JToggleButton button : dayButtons) {
                         if (button.isSelected()) {
