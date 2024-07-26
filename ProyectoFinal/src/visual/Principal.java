@@ -75,13 +75,13 @@ public class Principal extends JFrame {
         JPanel panel_3 = new JPanel();
         panel_3.setForeground(new Color(153, 102, 102));
         panel_3.setBorder(new LineBorder(new Color(153, 102, 102), 2, true));
-        panel_3.setBounds(58, 44, 599, 254);
+        panel_3.setBounds(10, 44, 700, 254);
         contentPane.add(panel_3);
         panel_3.setLayout(null);
         
                 JPanel panel = new JPanel();
                 panel.setBackground(new Color(51, 204, 204));
-                panel.setBounds(28, 56, 172, 33);
+                panel.setBounds(10, 56, 172, 33);
                 panel_3.add(panel);
                 panel.setBorder(new LineBorder(new Color(0, 0, 0)));
                 
@@ -101,7 +101,7 @@ public class Principal extends JFrame {
                                 	
                                 });
                                 
-                                btnCliente.setBounds(28, 87, 172, 122);
+                                btnCliente.setBounds(10, 87, 172, 122);
                                 panel_3.add(btnCliente);
                                 btnCliente.setForeground(Color.WHITE);
                                 btnCliente.setIcon(new ImageIcon(clienteImage));
@@ -110,11 +110,11 @@ public class Principal extends JFrame {
                                 
                                         JPanel panel_1 = new JPanel();
                                         panel_1.setBackground(new Color(102, 204, 204));
-                                        panel_1.setBounds(242, 56, 120, 33);
+                                        panel_1.setBounds(192, 56, 181, 33);
                                         panel_3.add(panel_1);
                                         panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
                                         
-                                                JLabel lblTrabajadores_1 = new JLabel("INFORME");
+                                                JLabel lblTrabajadores_1 = new JLabel("INFORME DEL ESTUDIANTE");
                                                 lblTrabajadores_1.setForeground(new Color(255, 255, 255));
                                                 lblTrabajadores_1.setBackground(new Color(255, 255, 255));
                                                 lblTrabajadores_1.setFont(new Font("Yu Gothic Medium", Font.BOLD, 11));
@@ -128,7 +128,7 @@ public class Principal extends JFrame {
                                                         		l.setVisible(true);
                                                         	}
                                                         });
-                                                        btnTrabajador.setBounds(242, 87, 120, 122);
+                                                        btnTrabajador.setBounds(192, 87, 181, 122);
                                                         panel_3.add(btnTrabajador);
                                                         btnTrabajador.setHorizontalAlignment(SwingConstants.LEFT);
                                                         btnTrabajador.setForeground(Color.WHITE);
@@ -138,7 +138,7 @@ public class Principal extends JFrame {
                                                         
                                                                 JPanel panel_2 = new JPanel();
                                                                 panel_2.setBackground(new Color(102, 204, 204));
-                                                                panel_2.setBounds(416, 56, 120, 33);
+                                                                panel_2.setBounds(570, 56, 120, 33);
                                                                 panel_3.add(panel_2);
                                                                 panel_2.setBorder(new LineBorder(new Color(0, 0, 0)));
                                                                 
@@ -156,7 +156,7 @@ public class Principal extends JFrame {
                                                                                 		
                                                                                 	}
                                                                                 });
-                                                                                btnProyecto.setBounds(416, 87, 120, 122);
+                                                                                btnProyecto.setBounds(570, 87, 120, 122);
                                                                                 panel_3.add(btnProyecto);
                                                                                 btnProyecto.setForeground(Color.WHITE);
                                                                                 btnProyecto.setBackground(Color.WHITE);
